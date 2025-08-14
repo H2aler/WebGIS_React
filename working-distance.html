@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>작동하는 거리 측정</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@8.2.0/ol.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #ccc;
+            margin: 20px 0;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.active {
+            background: #28a745;
+        }
+        #result {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            font-weight: bold;
+            min-height: 50px;
+        }
+        .status {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>작동하는 거리 측정</h1>
+    <div class="controls">
+        <button id="measureBtn">거리 측정 시작</button>
+        <button id="clearBtn">모두 지우기</button>
+        <button id="resetBtn">리셋</button>
+    </div>
+    <div id="map"></div>
+    <div id="result">버튼을 클릭하고 지도에서 두 지점을 클릭하세요.</div>
+    <div class="status" id="status">대기 중...</div>
+
+    <script type="module">
+        import 'ol/ol.css';
+        import Map from 'ol/Map';
+        import View from 'ol/View';
+        import TileLayer from 'ol/layer/Tile';
+        import VectorLayer from 'ol/layer/Vector';
+        import VectorSource from 'ol/source/Vector';
+        import OSM from 'ol/source/OSM';
+        import { fromLonLat } from 'ol/proj';
+        import { Draw } from 'ol/interaction';
+        import { getLength } from 'ol/sphere';
+        import { Style, Stroke, Fill, Circle as CircleStyle } from 'ol/style';
+        import { Feature } from 'ol';
+        import { Point, LineString } from 'ol/geom';
+
+        console.log('스크립트 시작');
+
+        // 지도 생성
+        const map = new Map({
+            target: 'map',
+            layers: [
+                new TileLayer({
+                    source: new OSM()
+                })
+            ],
+            view: new View({
+                center: fromLonLat([127.7669, 37.5665]), // 서울
+                zoom: 10
+            })
+        });
+
+        console.log('지도 생성 완료');
+
+        // 벡터 소스와 레이어
+        const vectorSource = new VectorSource();
+        const vectorLayer = new VectorLayer({
+            source: vectorSource,
+            style: new Style({
+                stroke: new Stroke({
+                    color: '#ff0000',
+                    width: 3
+                }),
+                image: new CircleStyle({
+                    radius: 6,
+                    fill: new Fill({
+                        color: '#ff0000'
+                    }),
+                    stroke: new Stroke({
+                        color: '#ffffff',
+                        width: 2
+                    })
+                })
+            })
+        });
+
+        map.addLayer(vectorLayer);
+        console.log('벡터 레이어 추가 완료');
+
+        let draw = null;
+        let isMeasuring = false;
+        let clickCount = 0;
+        let points = [];
+
+        // 상태 업데이트 함수
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+            console.log('상태:', message);
+        }
+
+        // 거리 측정 시작
+        document.getElementById('measureBtn').addEventListener('click', () => {
+            console.log('거리 측정 버튼 클릭됨');
+            
+            // 기존 인터랙션 제거
+            if (draw) {
+                map.removeInteraction(draw);
+                console.log('기존 인터랙션 제거됨');
+            }
+
+            // 상태 초기화
+            isMeasuring = true;
+            clickCount = 0;
+            points = [];
+            
+            // 버튼 상태 변경
+            document.getElementById('measureBtn').classList.add('active');
+            document.getElementById('result').innerHTML = '지도에서 첫 번째 지점을 클릭하세요.';
+            updateStatus('첫 번째 지점 클릭 대기 중...');
+
+            // 새로운 Draw 인터랙션 생성
+            draw = new Draw({
+                source: vectorSource,
+                type: 'LineString',
+                style: new Style({
+                    stroke: new Stroke({
+                        color: '#00ff00',
+                        width: 3,
+                        lineDash: [5, 5]
+                    }),
+                    image: new CircleStyle({
+                        radius: 8,
+                        fill: new Fill({
+                            color: '#00ff00'
+                        }),
+                        stroke: new Stroke({
+                            color: '#ffffff',
+                            width: 2
+                        })
+                    })
+                })
+            });
+
+            console.log('Draw 인터랙션 생성됨');
+
+            // 그리기 시작 이벤트
+            draw.on('drawstart', (event) => {
+                console.log('그리기 시작됨');
+                updateStatus('그리기 시작됨');
+            });
+
+            // 그리기 중 이벤트
+            draw.on('drawend', (event) => {
+                console.log('그리기 완료됨');
+                const feature = event.feature;
+                const geometry = feature.getGeometry();
+                const coordinates = geometry.getCoordinates();
+                
+                console.log('좌표:', coordinates);
+                console.log('좌표 개수:', coordinates.length);
+                
+                if (coordinates.length >= 2) {
+                    const length = getLength(geometry);
+                    console.log('계산된 거리:', length);
+                    
+                    const resultText = length < 1000 ? 
+                        `거리: ${length.toFixed(1)} m` : 
+                        `거리: ${(length / 1000).toFixed(3)} km`;
+                    
+                    document.getElementById('result').innerHTML = 
+                        `<span style="color: green; font-size: 18px;">✅ ${resultText}</span>`;
+                    
+                    updateStatus(`측정 완료: ${resultText}`);
+                    console.log('결과 표시됨:', resultText);
+                    
+                    // 측정 완료 후 상태 초기화
+                    setTimeout(() => {
+                        isMeasuring = false;
+                        document.getElementById('measureBtn').classList.remove('active');
+                        updateStatus('대기 중...');
+                    }, 3000);
+                } else {
+                    document.getElementById('result').innerHTML = 
+                        '<span style="color: red;">❌ 두 개 이상의 지점이 필요합니다.</span>';
+                    updateStatus('좌표 부족');
+                }
+            });
+
+            // 인터랙션을 지도에 추가
+            map.addInteraction(draw);
+            console.log('인터랙션 지도에 추가됨');
+        });
+
+        // 모두 지우기
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            vectorSource.clear();
+            document.getElementById('result').innerHTML = '모든 데이터가 삭제되었습니다.';
+            updateStatus('모든 데이터 삭제됨');
+            console.log('모든 데이터 삭제됨');
+        });
+
+        // 리셋
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (draw) {
+                map.removeInteraction(draw);
+                draw = null;
+            }
+            vectorSource.clear();
+            isMeasuring = false;
+            clickCount = 0;
+            points = [];
+            document.getElementById('measureBtn').classList.remove('active');
+            document.getElementById('result').innerHTML = '리셋되었습니다. 다시 시작하세요.';
+            updateStatus('리셋됨');
+            console.log('리셋됨');
+        });
+
+        // 지도 클릭 이벤트 (디버깅용)
+        map.on('click', (event) => {
+            console.log('지도 클릭됨:', event.coordinate);
+            if (isMeasuring) {
+                clickCount++;
+                points.push(event.coordinate);
+                updateStatus(`클릭 ${clickCount}회: ${points.length}개 지점`);
+            }
+        });
+
+        console.log('이벤트 리스너 설정 완료');
+        updateStatus('준비 완료');
+    </script>
+</body>
+</html> 

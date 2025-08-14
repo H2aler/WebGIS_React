@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 WebGIS - OpenLayers 지도 서비스</title>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <h1>🌍 WebGIS 지도 서비스</h1>
+            
+            <!-- 검색 기능 추가 -->
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="도시나 나라를 검색하세요..." class="search-input">
+                <button id="searchBtn" class="search-btn">🔍</button>
+                <button id="themeToggle" class="theme-toggle" title="테마 전환">🌓</button>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            
+            <!-- 컨트롤 -->
+            <div class="controls">
+                <button id="zoomIn" class="control-btn">➕</button>
+                <button id="zoomOut" class="control-btn">➖</button>
+                <button id="fullExtent" class="control-btn">🏠</button>
+                <button id="fullscreenToggle" class="control-btn" title="전체 화면">⛶</button>
+                <select id="layerSelect" aria-label="지도 레이어 선택">
+                    <option value="osm">OpenStreetMap</option>
+                    <option value="satellite">위성 이미지</option>
+                    <option value="terrain">지형도</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <!-- 지도 컨테이너 -->
+            <div class="map-container">
+                <div id="map" class="map"></div>
+                <div id="coordinates" class="coordinates">좌표: 37.5665, 126.9780 (서울)</div>
+                <!-- 멀티-스마트 거리 선택 패널 -->
+                <div id="routeChoice" class="route-choice" style="display:none;">
+                    <div class="route-choice-title">📏 선택: <span id="routeChoiceName"></span></div>
+                    <div class="route-choice-meta">검색 결과 경로 연결 • 합계는 마지막 구간 선택 시 표시</div>
+                    <div class="route-choice-actions">
+                        <button id="routeAddMid" class="inline-btn">➕ 중간 구간</button>
+                        <button id="routeAddLast" class="inline-btn">✅ 마지막 구간</button>
+                        <button id="routeCancelChoice" class="inline-btn">✖ 취소</button>
+                    </div>
+                    <div class="route-choice-hint">Tip: 선택 후 다른 장소를 계속 검색해 연결하세요.</div>
+                </div>
+            </div>
+
+            <!-- 사이드바 -->
+            <aside class="sidebar">
+                <!-- 정보 패널 -->
+                <div class="info-panel">
+                    <h3>ℹ️ 정보</h3>
+                    <p>OpenLayers 기반 WebGIS입니다. 검색, 거리/면적 측정, 마커, 즐겨찾기, 테마를 제공합니다.</p>
+                    <ul class="info-list">
+                        <li>🔍 검색·즐겨찾기 및 키보드 탐색</li>
+                        <li>📏/📐 지오데식 계산·구간 배지·방위각 지원</li>
+                        <li>📍 마커 · 🗑️ 초기화 · 💾 데이터 내보내기</li>
+                        <li>🌓 라이트/다크 · ⛶ 전체 화면</li>
+                    </ul>
+                    <div class="info-badges">
+                        <span class="badge">Geocoding: Nominatim (OSM)</span>
+                        <span class="badge">Projection: EPSG:3857</span>
+                        <span class="badge">Coords: WGS84</span>
+                    </div>
+                </div>
+
+                <!-- 사용 방법 패널 -->
+                <div class="help-panel">
+                    <h3>📘 사용 방법</h3>
+                    <div class="help-section">
+                        <h4>🔍 검색</h4>
+                        <ul>
+                            <li>검색창에 도시/나라를 입력하고 Enter 또는 돋보기 버튼 클릭</li>
+                            <li>결과 항목 클릭: 해당 위치로 이동하며 스마트 거리 측정 시작점으로 설정</li>
+                            <li>결과 우측 버튼:
+                                <ul>
+                                    <li>⭐ 즐겨찾기 추가</li>
+                                    <li>📏 스마트 거리 측정 시작</li>
+                                    <li>📐 스마트 면적 측정 시작</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>📏 거리 측정</h4>
+                        <ul>
+                            <li>좌측 패널의 "📏 거리 측정" 클릭 → 지도에서 점을 순서대로 클릭</li>
+                            <li>끝점 근처에 전체 거리 툴팁, 마지막 선분 중앙에 구간 거리 배지 표시</li>
+                            <li>Enter: 측정 완료, Esc: 측정 취소, Backspace: 마지막 점 되돌리기</li>
+                            <li>스마트 거리: 검색 결과 클릭 또는 📏 버튼으로 시작점 자동 설정 → 지도 클릭으로 지점 추가 → 더블클릭으로 완료</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>📐 면적 측정</h4>
+                        <ul>
+                            <li>좌측 패널의 "📐 면적 측정" 클릭 → 지도에서 다각형을 그려 면적 계산</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>📍 마커/데이터</h4>
+                        <ul>
+                            <li>📍 마커 추가: 지도 클릭 위치에 임시 마커</li>
+                            <li>🗑️ 모두 지우기: 모든 측정/마커 초기화</li>
+                            <li>💾 데이터 내보내기: 측정 결과를 GeoJSON 유사 포맷으로 다운로드</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>🖥️ UI/환경</h4>
+                        <ul>
+                            <li>🌓 테마 토글: 라이트/다크 전환</li>
+                            <li>⛶ 전체 화면: 브라우저 전체 화면 토글</li>
+                            <li>레이어 선택: OSM/위성/지형도 전환</li>
+                        </ul>
+                    </div>
+                    <div class="help-section">
+                        <h4>⌨️ 단축키</h4>
+                        <table class="help-table">
+                            <tbody>
+                                <tr><td>Enter</td><td>측정 완료</td></tr>
+                                <tr><td>Esc</td><td>측정 취소/닫기</td></tr>
+                                <tr><td>Backspace</td><td>마지막 점 되돌리기</td></tr>
+                                <tr><td>↑/↓</td><td>검색 결과 이동</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <details class="help-section">
+                        <summary>문제 해결 팁</summary>
+                        <ul>
+                            <li>검색이 느릴 때: 네트워크 상태 확인, 다시 시도</li>
+                            <li>버튼이 보이지 않을 때: 브라우저 새로고침(F5) 또는 캐시 비우기</li>
+                            <li>지도가 느릴 때: 레이어를 OSM으로 전환</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- 도구 패널 -->
+                <div class="tools-panel">
+                    <h3>🛠️ 도구</h3>
+                    <button id="measureDistance" class="tool-btn">📏 거리 측정</button>
+                    <button id="measureArea" class="tool-btn">📐 면적 측정</button>
+                    <button id="addMarker" class="tool-btn">📍 마커 추가</button>
+                    <button id="clearAll" class="tool-btn">🗑️ 모두 지우기</button>
+                    <button id="exportData" class="tool-btn">💾 데이터 내보내기</button>
+                </div>
+
+                <!-- 측정 설정 패널 -->
+                <div class="tools-panel">
+                    <h3>⚙️ 측정 설정</h3>
+                    <div class="measure-settings">
+                        <label class="setting-item"><input type="checkbox" id="optGeodesic" checked> 지오데식 계산(타원체)</label>
+                        <label class="setting-item"><input type="checkbox" id="optSegments" checked> 구간 길이 배지 표시</label>
+                        <label class="setting-item"><input type="checkbox" id="optBearing" checked> 마지막 구간 방위각 표시</label>
+                        <div class="setting-actions">
+                            <button id="undoPoint" class="tool-btn">↩️ 마지막 점 취소</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 즐겨찾기 패널 -->
+                <div class="favorites-panel">
+                    <h3>⭐ 즐겨찾기</h3>
+                    <div id="favoritesList" class="favorites-list"></div>
+                </div>
+
+                <!-- 측정 결과 패널 -->
+                <div class="measurement-panel">
+                    <h3>📊 측정 결과</h3>
+                    <div id="measurementResult" class="measurement-result">
+                        측정 도구를 사용하여 결과를 확인하세요.
+                    </div>
+                    <div id="measureActions" class="measure-actions">
+                        <button id="finishMeasure" class="inline-btn" title="측정 완료(Enter)">✅ 완료</button>
+                        <button id="cancelMeasure" class="inline-btn" title="측정 취소(Esc)">✖ 취소</button>
+                        <button id="resetMeasure" class="inline-btn" title="처음 지점으로 초기화(R)">↺ 초기화</button>
+                    </div>
+                    <div class="measure-history-panel">
+                        <h3>🧭 측정 이력</h3>
+                        <div id="measureHistoryList" class="measure-history-list"></div>
+                    </div>
+                </div>
+
+                <!-- 범례 패널 -->
+                <div class="legend-panel">
+                    <h3>🎨 범례</h3>
+                    <div class="legend-item">
+                        <div class="legend-color distance-color"></div>
+                        <span>거리 측정</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color area-color"></div>
+                        <span>면적 측정</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-color"></div>
+                        <span>마커</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- 토스트 컨테이너 -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html> 

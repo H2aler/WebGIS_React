@@ -1,0 +1,29 @@
+{
+  "name": "webgis-openglayers",
+  "version": "1.0.0",
+  "description": "OpenLayers를 활용한 WebGIS 구현 및 지도기반 서비스",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm --prefix webgis-react start",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "http-server dist -p 8080"
+  },
+  "dependencies": {
+    "ol": "^8.2.0",
+    "proj4": "^2.9.2"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "http-server": "^14.1.1"
+  },
+  "keywords": [
+    "webgis",
+    "openlayers",
+    "maps",
+    "geospatial"
+  ],
+  "author": "Archaion",
+  "license": "MIT"
+} 
