@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm --prefix webgis-react start",
-    "dev": "vite",
+    "dev": "npm --prefix webgis-react start",
     "build": "vite build",
     "preview": "vite preview",
     "serve": "http-server dist -p 8080"
