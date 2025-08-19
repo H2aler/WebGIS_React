@@ -1,28 +1,11 @@
-import 'ol/ol.css';
-import './styles.css';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import OSM from 'ol/source/OSM';
-import XYZ from 'ol/source/XYZ';
-import { fromLonLat, transform, transformExtent } from 'ol/proj';
-import { defaults as defaultControls, Zoom, ScaleLine } from 'ol/control';
-import { Point, LineString, Polygon } from 'ol/geom';
-import { Feature } from 'ol';
-import { Style, Icon, Stroke, Fill, Circle as CircleStyle, Text } from 'ol/style';
-import { Draw, Modify, Snap } from 'ol/interaction';
-import { getLength, getArea } from 'ol/sphere';
-import { unByKey } from 'ol/Observable';
-import Overlay from 'ol/Overlay';
+// OpenLayers CDN을 통해 로드됨 - 전역 ol 객체 사용
 
 // 지도 초기화
 class WebGISMap {
     constructor() {
         this.map = null;
-        this.vectorSource = new VectorSource();
-        this.vectorLayer = new VectorLayer({
+        this.vectorSource = new ol.source.Vector();
+        this.vectorLayer = new ol.layer.Vector({
             source: this.vectorSource,
             style: (feature) => this.getFeatureStyle(feature)
         });
@@ -69,14 +52,14 @@ class WebGISMap {
     // 지도 초기화
     initMap() {
         // 기본 OSM 레이어
-        const osmLayer = new TileLayer({
-            source: new OSM(),
+        const osmLayer = new ol.layer.Tile({
+            source: new ol.source.OSM(),
             title: 'OpenStreetMap'
         });
 
         // 위성 이미지 레이어
-        const satelliteLayer = new TileLayer({
-            source: new XYZ({
+        const satelliteLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                 crossOrigin: 'anonymous'
             }),
@@ -85,8 +68,8 @@ class WebGISMap {
         });
 
         // 지형도 레이어
-        const terrainLayer = new TileLayer({
-            source: new XYZ({
+        const terrainLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
                 crossOrigin: 'anonymous'
             }),
@@ -101,20 +84,20 @@ class WebGISMap {
         };
 
         // 지도 생성
-        this.map = new Map({
+        this.map = new ol.Map({
             target: 'map',
             layers: [osmLayer, satelliteLayer, terrainLayer, this.vectorLayer],
-            view: new View({
-                center: fromLonLat([127.7669, 37.5665]), // 서울 중심
+            view: new ol.View({
+                center: ol.proj.ol.proj.fromLonLat([127.7669, 37.5665]), // 서울 중심
                 zoom: 10,
                 maxZoom: 19,
                 minZoom: 3
             }),
-            controls: defaultControls({
+            controls: ol.control.defaults({
                 zoom: true,
                 attribution: true
             }).extend([
-                new ScaleLine({
+                new ol.control.ScaleLine({
                     units: 'metric'
                 })
             ])
@@ -123,7 +106,7 @@ class WebGISMap {
         // 좌표 표시 이벤트
         this.map.on('pointermove', (event) => {
             const coordinate = event.coordinate;
-            const lonLat = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+            const lonLat = ol.proj.ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
             document.getElementById('coordinates').innerHTML = 
                 `경도: ${lonLat[0].toFixed(6)}<br>위도: ${lonLat[1].toFixed(6)}`;
         });
@@ -161,7 +144,7 @@ class WebGISMap {
 
         document.getElementById('fullExtent').addEventListener('click', () => {
             const extent4326 = [127.0, 37.0, 128.5, 38.0];
-            const extent3857 = transformExtent(extent4326, 'EPSG:4326', 'EPSG:3857');
+            const extent3857 = ol.proj.transformExtent(extent4326, 'EPSG:4326', 'EPSG:3857');
             this.map.getView().fit(extent3857, {
                 padding: [50, 50, 50, 50],
                 duration: 1000
@@ -451,7 +434,7 @@ class WebGISMap {
     // 스마트 거리 측정: 검색 결과 지점을 시작점으로 설정하고, 사용자가 추가 클릭한 지점까지 누적 거리 계산
     startSmartDistanceFrom(lat, lon) {
         // 시작점 표시 및 지도 이동
-        const start3857 = transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+        const start3857 = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
         this.goToLocation(lat, lon);
 
         // 상태 초기화
@@ -489,7 +472,7 @@ class WebGISMap {
 
     // 멀티-스마트: 검색 결과 지점 간 경로 누적
     handleMultiSmartDistanceClick(lat, lon, name) {
-        const coord3857 = transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+        const coord3857 = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
         // 경로 시작이 아니면 중간/마지막 선택
         if (!this.multiRouteActive) {
             this.multiRouteActive = true;
@@ -545,10 +528,10 @@ class WebGISMap {
     }
 
     updateRoutePreview() {
-        const line = new LineString(this.routeCoords);
+        const line = new ol.geom.LineString(this.routeCoords);
         if (!this.routeLineFeature) {
-            this.routeLineFeature = new Feature({ geometry: line });
-            this.routeLineFeature.setStyle(new Style({ stroke: new Stroke({ color: '#1e90ff', width: 3 }) }));
+            this.routeLineFeature = new ol.Feature({ geometry: line });
+            this.routeLineFeature.setStyle(new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#1e90ff', width: 3 }) }));
             this.vectorSource.addFeature(this.routeLineFeature);
         } else {
             this.routeLineFeature.setGeometry(line);
@@ -561,8 +544,8 @@ class WebGISMap {
         let total = 0;
         const segments = [];
         for (let i = 1; i < this.routeCoords.length; i++) {
-            const seg = new LineString([this.routeCoords[i-1], this.routeCoords[i]]);
-            const len = getLength(seg);
+            const seg = new ol.geom.LineString([this.routeCoords[i-1], this.routeCoords[i]]);
+            const len = ol.sphere.getLength(seg);
             total += len;
             segments.push(this.formatDistance(len));
         }
@@ -582,25 +565,25 @@ class WebGISMap {
 
     updateSmartDistanceLine() {
         // 라인 생성/업데이트
-        const line = new LineString(this.smartCoords);
+        const line = new ol.geom.LineString(this.smartCoords);
         if (!this.smartLineFeature) {
-            this.smartLineFeature = new Feature({ geometry: line });
+            this.smartLineFeature = new ol.Feature({ geometry: line });
             this.smartLineFeature.set('type', 'measurement');
             this.smartLineFeature.set('measurement', 'distance');
-            this.smartLineFeature.setStyle(new Style({
-                stroke: new Stroke({ color: '#28a745', width: 3, lineDash: [5, 5] })
+            this.smartLineFeature.setStyle(new ol.style.Style({
+                stroke: new ol.style.Stroke({ color: '#28a745', width: 3, lineDash: [5, 5] })
             }));
             this.vectorSource.addFeature(this.smartLineFeature);
         } else {
             this.smartLineFeature.setGeometry(line);
         }
 
-        const len = getLength(line);
+        const len = ol.sphere.getLength(line);
         if (!this.liveTooltipOverlay) {
             const el = document.createElement('div');
             el.className = 'toast';
             el.style.pointerEvents = 'none';
-            this.liveTooltipOverlay = new Overlay({ element: el, offset: [10, -10], positioning: 'bottom-left' });
+            this.liveTooltipOverlay = new ol.Overlay({ element: el, offset: [10, -10], positioning: 'bottom-left' });
             this.map.addOverlay(this.liveTooltipOverlay);
         }
         this.liveTooltipOverlay.getElement().textContent = this.formatDistance(len);
@@ -611,12 +594,12 @@ class WebGISMap {
             const a = this.smartCoords[this.smartCoords.length - 2];
             const b = this.smartCoords[this.smartCoords.length - 1];
             const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-            const segLen = getLength(new LineString([a, b]));
+            const segLen = ol.sphere.getLength(new ol.geom.LineString([a, b]));
             if (!this.smartSegmentOverlay) {
                 const el = document.createElement('div');
                 el.className = 'toast';
                 el.style.pointerEvents = 'none';
-                this.smartSegmentOverlay = new Overlay({ element: el, offset: [0, -10], positioning: 'bottom-center' });
+                this.smartSegmentOverlay = new ol.Overlay({ element: el, offset: [0, -10], positioning: 'bottom-center' });
                 this.map.addOverlay(this.smartSegmentOverlay);
             }
             this.smartSegmentOverlay.getElement().textContent = this.formatDistance(segLen);
@@ -626,8 +609,8 @@ class WebGISMap {
 
     finishSmartDistance() {
         if (!this.smartDistanceActive || this.smartCoords.length < 2) return;
-        const line = new LineString(this.smartCoords);
-        const length = getLength(line);
+        const line = new ol.geom.LineString(this.smartCoords);
+        const length = ol.sphere.getLength(line);
         const resultText = this.formatDistance(length);
         this.measurementResults.push({ type: 'distance', value: length, text: resultText, coordinates: this.smartCoords });
         this.measurementHistory.unshift({ type: 'distance', value: length, text: resultText, when: new Date().toISOString() });
@@ -663,7 +646,7 @@ class WebGISMap {
     goToLocation(lat, lon) {
         console.log('🗺️ 위치로 이동:', lat, lon);
         
-        const coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+        const coordinates = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
         console.log('📍 변환된 좌표:', coordinates);
         
         this.map.getView().animate({
@@ -711,10 +694,10 @@ class WebGISMap {
     }
 
     addSearchMarker(lat, lon) {
-        const coordinates = transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
-        const point = new Point(coordinates);
+        const coordinates = ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857');
+        const point = new ol.geom.Point(coordinates);
         
-        const feature = new Feature({
+        const feature = new ol.Feature({
             geometry: point,
             type: 'marker',
             search: true
@@ -814,7 +797,7 @@ class WebGISMap {
         if (this.smartDistanceActive && this.smartStartCoord) {
             this.smartCoords = [this.smartStartCoord];
             if (this.smartLineFeature) {
-                this.smartLineFeature.setGeometry(new LineString(this.smartCoords));
+                this.smartLineFeature.setGeometry(new ol.geom.LineString(this.smartCoords));
             } else {
                 this.updateSmartDistanceLine();
             }
@@ -891,7 +874,7 @@ class WebGISMap {
             this.modify = null;
         }
         if (this.measurementListener) {
-            unByKey(this.measurementListener);
+            ol.Observable.unByKey(this.measurementListener);
             this.measurementListener = null;
         }
         if (this.distanceOverlay) {
@@ -914,21 +897,21 @@ class WebGISMap {
         this.deactivateCurrentTool();
 
         // Draw 인터랙션 생성
-        this.draw = new Draw({
+        this.draw = new ol.interaction.Draw({
             source: this.vectorSource,
             type: 'LineString',
-            style: new Style({
-                stroke: new Stroke({
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
                     color: '#00ff00',
                     width: 3,
                     lineDash: [5, 5]
                 }),
-                image: new CircleStyle({
+                image: new ol.style.Circle({
                     radius: 8,
-                    fill: new Fill({
+                    fill: new ol.style.Fill({
                         color: '#00ff00'
                     }),
-                    stroke: new Stroke({
+                    stroke: new ol.style.Stroke({
                         color: '#ffffff',
                         width: 2
                     })
@@ -950,7 +933,7 @@ class WebGISMap {
                 const el = document.createElement('div');
                 el.className = 'toast';
                 el.style.pointerEvents = 'none';
-                this.liveTooltipOverlay = new Overlay({ element: el, offset: [10, -10], positioning: 'bottom-left' });
+                this.liveTooltipOverlay = new ol.Overlay({ element: el, offset: [10, -10], positioning: 'bottom-left' });
                 this.map.addOverlay(this.liveTooltipOverlay);
             }
             const sketch = event.feature;
@@ -958,18 +941,18 @@ class WebGISMap {
                 const geom = e.target;
                 const coords = geom.getCoordinates();
                 if (coords && coords.length >= 2) {
-                    const len = getLength(geom);
+                    const len = ol.sphere.getLength(geom);
                     this.liveTooltipOverlay.getElement().textContent = this.formatDistance(len);
                     this.liveTooltipOverlay.setPosition(coords[coords.length - 1]);
                     // 마지막 구간 배지
                     const lastSeg = [coords[coords.length - 2], coords[coords.length - 1]];
                     const mid = [(lastSeg[0][0] + lastSeg[1][0]) / 2, (lastSeg[0][1] + lastSeg[1][1]) / 2];
-                    const segLen = getLength(new LineString(lastSeg));
+                    const segLen = ol.sphere.getLength(new ol.geom.LineString(lastSeg));
                     if (!this.segmentOverlay) {
                         const el = document.createElement('div');
                         el.className = 'toast';
                         el.style.pointerEvents = 'none';
-                        this.segmentOverlay = new Overlay({ element: el, offset: [0, -10], positioning: 'bottom-center' });
+                        this.segmentOverlay = new ol.Overlay({ element: el, offset: [0, -10], positioning: 'bottom-center' });
                         this.map.addOverlay(this.segmentOverlay);
                     }
                     this.segmentOverlay.getElement().textContent = this.formatDistance(segLen);
@@ -996,7 +979,7 @@ class WebGISMap {
             console.log('📍 좌표:', coordinates);
             
             if (coordinates.length >= 2) {
-                const length = getLength(geometry);
+                const length = ol.sphere.getLength(geometry);
                 console.log('📏 계산된 거리:', length);
                 
                 // 측정 결과를 피처에 저장
@@ -1083,14 +1066,14 @@ class WebGISMap {
         document.getElementById('measurementResult').innerHTML = 
             '<div class="measurement-guide">지도에서 다각형을 그려 면적을 측정하세요.</div>';
 
-        this.draw = new Draw({
+        this.draw = new ol.interaction.Draw({
             source: this.vectorSource,
             type: 'Polygon',
             style: this.getMeasurementStyle()
         });
 
-        this.snap = new Snap({ source: this.vectorSource });
-        this.modify = new Modify({ source: this.vectorSource });
+        this.snap = new ol.interaction.Snap({ source: this.vectorSource });
+        this.modify = new ol.interaction.Modify({ source: this.vectorSource });
 
         this.map.addInteraction(this.draw);
         this.map.addInteraction(this.snap);
@@ -1100,7 +1083,7 @@ class WebGISMap {
             console.log('✅ 면적 측정 완료');
             const feature = event.feature;
             const geometry = feature.getGeometry();
-            const area = getArea(geometry);
+            const area = ol.sphere.getArea(geometry);
             
             console.log('📐 계산된 면적:', area);
             
@@ -1201,8 +1184,8 @@ class WebGISMap {
     addMarker(coordinate) {
         console.log('📍 마커 추가:', coordinate);
         
-        const marker = new Feature({
-            geometry: new Point(coordinate)
+        const marker = new ol.Feature({
+            geometry: new ol.geom.Point(coordinate)
         });
         
         marker.set('type', 'marker');
@@ -1211,7 +1194,7 @@ class WebGISMap {
         this.vectorSource.addFeature(marker);
         
         // 성공 메시지 표시
-        const lonLat = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+        const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
         document.getElementById('measurementResult').innerHTML = 
             `<div class="measurement-success">✅ 마커가 추가되었습니다! (${lonLat[1].toFixed(4)}, ${lonLat[0].toFixed(4)})</div>`;
         
@@ -1284,12 +1267,12 @@ class WebGISMap {
     // 좌표 변환
     transformCoordinates(coordinates, geometryType) {
         if (geometryType === 'Point') {
-            return transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+            return ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
         } else if (geometryType === 'LineString') {
-            return coordinates.map(coord => transform(coord, 'EPSG:3857', 'EPSG:4326'));
+            return coordinates.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
         } else if (geometryType === 'Polygon') {
             return coordinates.map(ring => 
-                ring.map(coord => transform(coord, 'EPSG:3857', 'EPSG:4326'))
+                ring.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'))
             );
         }
         return coordinates;
@@ -1306,7 +1289,7 @@ class WebGISMap {
             if (measurement === 'distance') {
                 return this.getDistanceStyle(value);
             } else if (measurement === 'area') {
-                return this.getAreaStyle(value);
+                return this.ol.sphere.getAreaStyle(value);
             }
         } else if (type === 'marker') {
             return this.getMarkerStyle();
@@ -1317,20 +1300,20 @@ class WebGISMap {
 
     // 기본 스타일
     getDefaultStyle() {
-        return new Style({
-            stroke: new Stroke({
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
                 color: '#ff4757',
                 width: 2
             }),
-            fill: new Fill({
+            fill: new ol.style.Fill({
                 color: 'rgba(255, 71, 87, 0.2)'
             }),
-            image: new CircleStyle({
+            image: new ol.style.Circle({
                 radius: 7,
-                fill: new Fill({
+                fill: new ol.style.Fill({
                     color: '#ff4757'
                 }),
-                stroke: new Stroke({
+                stroke: new ol.style.Stroke({
                     color: '#fff',
                     width: 2
                 })
@@ -1340,18 +1323,18 @@ class WebGISMap {
 
     // 거리 측정 그리기 스타일
     getDistanceDrawingStyle() {
-        return new Style({
-            stroke: new Stroke({
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
                 color: '#2ed573',
                 width: 3,
                 lineDash: [5, 5]
             }),
-            image: new CircleStyle({
+            image: new ol.style.Circle({
                 radius: 6,
-                fill: new Fill({
+                fill: new ol.style.Fill({
                     color: '#2ed573'
                 }),
-                stroke: new Stroke({
+                stroke: new ol.style.Stroke({
                     color: '#fff',
                     width: 2
                 })
@@ -1361,20 +1344,20 @@ class WebGISMap {
 
     // 측정용 스타일
     getMeasurementStyle() {
-        return new Style({
-            stroke: new Stroke({
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
                 color: '#2ed573',
                 width: 3
             }),
-            fill: new Fill({
+            fill: new ol.style.Fill({
                 color: 'rgba(46, 213, 115, 0.2)'
             }),
-            image: new CircleStyle({
+            image: new ol.style.Circle({
                 radius: 6,
-                fill: new Fill({
+                fill: new ol.style.Fill({
                     color: '#2ed573'
                 }),
-                stroke: new Stroke({
+                stroke: new ol.style.Stroke({
                     color: '#fff',
                     width: 2
                 })
@@ -1384,28 +1367,28 @@ class WebGISMap {
 
     // 거리 측정 스타일
     getDistanceStyle(length) {
-        return new Style({
-            stroke: new Stroke({
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
                 color: '#2ed573',
                 width: 3
             }),
-            image: new CircleStyle({
+            image: new ol.style.Circle({
                 radius: 6,
-                fill: new Fill({
+                fill: new ol.style.Fill({
                     color: '#2ed573'
                 }),
-                stroke: new Stroke({
+                stroke: new ol.style.Stroke({
                     color: '#fff',
                     width: 2
                 })
             }),
-            text: new Text({
+            text: new ol.style.Text({
                 text: this.formatDistance(length),
                 font: '14px Arial',
-                fill: new Fill({
+                fill: new ol.style.Fill({
                     color: '#2ed573'
                 }),
-                stroke: new Stroke({
+                stroke: new ol.style.Stroke({
                     color: '#fff',
                     width: 2
                 }),
@@ -1415,22 +1398,22 @@ class WebGISMap {
     }
 
     // 면적 측정 스타일
-    getAreaStyle(area) {
-        return new Style({
-            stroke: new Stroke({
+    ol.sphere.getAreaStyle(area) {
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
                 color: '#2ed573',
                 width: 3
             }),
-            fill: new Fill({
+            fill: new ol.style.Fill({
                 color: 'rgba(46, 213, 115, 0.2)'
             }),
-            text: new Text({
+            text: new ol.style.Text({
                 text: this.formatArea(area),
                 font: '14px Arial',
-                fill: new Fill({
+                fill: new ol.style.Fill({
                     color: '#2ed573'
                 }),
-                stroke: new Stroke({
+                stroke: new ol.style.Stroke({
                     color: '#fff',
                     width: 2
                 }),
@@ -1441,7 +1424,7 @@ class WebGISMap {
 
     // 마커 스타일
     getMarkerStyle() {
-        return new Style({
+        return new ol.style.Style({
             image: new Icon({
                 anchor: [0.5, 1],
                 src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ff4757"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
