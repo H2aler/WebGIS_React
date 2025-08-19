@@ -1,29 +1,45 @@
 {
-  "name": "webgis-openglayers",
-  "version": "1.0.0",
-  "description": "OpenLayers를 활용한 WebGIS 구현 및 지도기반 서비스",
-  "main": "index.js",
-  "scripts": {
-    "start": "npm --prefix webgis-react start",
-    "dev": "npm --prefix webgis-react start",
-    "build": "vite build",
-    "preview": "vite preview",
-    "serve": "http-server dist -p 8080"
-  },
+  "name": "webgis-react",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "ol": "^8.2.0",
-    "proj4": "^2.9.2"
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "ol": "^10.6.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
   },
-  "devDependencies": {
-    "vite": "^5.0.0",
-    "http-server": "^14.1.1"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "keywords": [
-    "webgis",
-    "openlayers",
-    "maps",
-    "geospatial"
-  ],
-  "author": "Archaion",
-  "license": "MIT"
-} 
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

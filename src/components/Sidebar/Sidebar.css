@@ -1,0 +1,598 @@
+/* 원본 사이트와 동일한 사이드바 스타일 */
+.sidebar {
+  grid-area: sidebar;
+  background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 1000;
+}
+
+.sidebar-header {
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.sidebar-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--gray-500);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+  display: none;
+}
+
+.sidebar-close:hover {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+.tab-button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button:hover {
+  background: var(--gray-100);
+  color: var(--gray-800);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  background: var(--white);
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+.sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-full);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* 측정 도구 패널 */
+.measurement-tools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.tools-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-md);
+}
+
+.tools-description {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.5;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.tool-button {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 50px;
+}
+
+.tool-button:hover {
+  border-color: var(--primary-color);
+  background: var(--gray-50);
+  transform: translateY(-1px);
+}
+
+.tool-button.active {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: var(--white);
+}
+
+.tool-button.active:hover {
+  background: var(--secondary-color);
+}
+
+/* 측정 결과 패널 */
+.measurement-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.results-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-md);
+}
+
+.measurement-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.measurement-item {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-size: 0.9rem;
+}
+
+.measurement-type {
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-xs);
+}
+
+.measurement-value {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.measurement-time {
+  color: var(--gray-500);
+  font-size: 0.8rem;
+  margin-top: var(--spacing-xs);
+}
+
+/* 즐겨찾기 패널 */
+.favorites-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.favorites-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-md);
+}
+
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.favorite-item {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.favorite-item:hover {
+  background: var(--gray-100);
+  border-color: var(--gray-300);
+}
+
+.favorite-info {
+  flex: 1;
+}
+
+.favorite-name {
+  font-weight: 500;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-xs);
+}
+
+.favorite-coords {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  font-family: 'Courier New', monospace;
+}
+
+.favorite-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+/* 정보 패널 */
+.info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.info-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: var(--spacing-md);
+}
+
+.info-item {
+  margin-bottom: var(--spacing-md);
+}
+
+.info-item strong {
+  color: var(--gray-800);
+  font-weight: 600;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.info-item p {
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.usage-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-sm) 0;
+}
+
+.usage-list li {
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.usage-list li:last-child {
+  border-bottom: none;
+}
+
+.info-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.badge {
+  background: var(--primary-color);
+  color: var(--white);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* 액션 버튼들 */
+.tools-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.clear-button {
+  background: var(--danger-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  flex: 1;
+}
+
+.clear-button:hover {
+  background: #e53e3e;
+  transform: translateY(-1px);
+}
+
+.export-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.export-button {
+  background: var(--accent-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  flex: 1;
+}
+
+.export-button:hover {
+  background: #3182ce;
+  transform: translateY(-1px);
+}
+
+/* 측정 설정 */
+.measurement-settings {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--gray-200);
+}
+
+.setting-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  color: var(--gray-700);
+}
+
+.setting-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+}
+
+.setting-actions {
+  margin-top: var(--spacing-md);
+}
+
+.tool-btn {
+  background: var(--gray-200);
+  color: var(--gray-700);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  width: 100%;
+}
+
+.tool-btn:hover {
+  background: var(--gray-300);
+  color: var(--gray-800);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: var(--transition-normal);
+    z-index: 2000;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-close {
+    display: block;
+  }
+
+  .sidebar-header {
+    padding: var(--spacing-md);
+  }
+
+  .sidebar-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .sidebar-tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    padding: var(--spacing-sm);
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .sidebar-content {
+    padding: var(--spacing-md);
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .tool-button {
+    padding: var(--spacing-sm);
+    font-size: 0.8rem;
+    min-height: 40px;
+  }
+
+  .export-buttons {
+    flex-direction: column;
+  }
+
+  .export-button {
+    width: 100%;
+  }
+}
+
+/* 다크 모드 */
+[data-theme="dark"] .sidebar {
+  background: var(--gray-800);
+  border-right-color: var(--gray-700);
+}
+
+[data-theme="dark"] .sidebar-header {
+  background: var(--gray-700);
+  border-bottom-color: var(--gray-600);
+}
+
+[data-theme="dark"] .sidebar-header h2 {
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .sidebar-close {
+  color: var(--gray-400);
+}
+
+[data-theme="dark"] .sidebar-close:hover {
+  background: var(--gray-600);
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .sidebar-tabs {
+  background: var(--gray-700);
+  border-bottom-color: var(--gray-600);
+}
+
+[data-theme="dark"] .tab-button {
+  color: var(--gray-400);
+}
+
+[data-theme="dark"] .tab-button:hover {
+  background: var(--gray-600);
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .tab-button.active {
+  color: var(--primary-color);
+  background: var(--gray-800);
+}
+
+[data-theme="dark"] .tool-button {
+  background: var(--gray-700);
+  border-color: var(--gray-600);
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .tool-button:hover {
+  border-color: var(--primary-color);
+  background: var(--gray-600);
+}
+
+[data-theme="dark"] .measurement-item {
+  background: var(--gray-700);
+  border-color: var(--gray-600);
+}
+
+[data-theme="dark"] .measurement-type {
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .measurement-time {
+  color: var(--gray-400);
+}
+
+[data-theme="dark"] .favorite-item {
+  background: var(--gray-700);
+  border-color: var(--gray-600);
+}
+
+[data-theme="dark"] .favorite-item:hover {
+  background: var(--gray-600);
+  border-color: var(--gray-500);
+}
+
+[data-theme="dark"] .favorite-name {
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .favorite-coords {
+  color: var(--gray-400);
+}
+
+[data-theme="dark"] .info-item strong {
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .info-item p {
+  color: var(--gray-400);
+}
+
+[data-theme="dark"] .usage-list li {
+  color: var(--gray-400);
+  border-bottom-color: var(--gray-600);
+}
+
+[data-theme="dark"] .tool-btn {
+  background: var(--gray-600);
+  color: var(--gray-200);
+}
+
+[data-theme="dark"] .tool-btn:hover {
+  background: var(--gray-500);
+  color: var(--gray-100);
+}

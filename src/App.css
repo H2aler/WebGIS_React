@@ -1,0 +1,2650 @@
+/* 기본 스타일 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CSS 변수 */
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --bg-color: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-color: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+[data-theme="dark"] {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-color: #94a3b8;
+  --bg-color: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-color: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: #334155;
+  --border-hover: #475569;
+}
+
+/* 컨테이너 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 100%;
+}
+
+/* 헤더 */
+.header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  height: 60px;
+}
+
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-color);
+  text-align: left;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* 검색 컨테이너 */
+.search-container {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 500px;
+  width: 100%;
+  flex: 1;
+  justify-content: center;
+  margin: 0 auto;
+  transform: translateX(6cm);
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.2s ease;
+  height: 40px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.search-btn, .prediction-btn {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-btn:hover, .prediction-btn:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.search-btn:disabled:hover {
+  border-color: var(--border-color);
+  background: var(--bg-color);
+  color: var(--text-color);
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-toggle {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 검색 결과 */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.search-result-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item.selected {
+  background: var(--bg-secondary);
+}
+
+.result-content {
+  flex: 1;
+}
+
+.result-name {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+
+.result-details {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.result-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.favorite-button, .measure-button {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.favorite-button:hover {
+  background: var(--warning-color);
+  color: white;
+  border-color: var(--warning-color);
+}
+
+.measure-button:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* 검색 로딩 */
+.search-loading {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-results {
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* 예측 결과 */
+.predictions-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.predictions-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-secondary);
+}
+
+.predictions-header h4 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.close-predictions {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.close-predictions:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-color);
+}
+
+.predictions-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.prediction-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prediction-item:last-child {
+  border-bottom: none;
+}
+
+.prediction-item:hover {
+  background: var(--bg-secondary);
+}
+
+.prediction-content {
+  flex: 1;
+  position: relative;
+}
+
+.prediction-name {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+
+.prediction-details {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.prediction-badge {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  background: var(--success-color);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.prediction-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 컨트롤 */
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.control-btn {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.controls select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 40px;
+}
+
+.controls select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+}
+
+/* 메인 콘텐츠 */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 지도 컨테이너 */
+.map-container {
+  flex: 1;
+  position: relative;
+  background: var(--bg-secondary);
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.coordinates {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-family: monospace;
+  z-index: 10;
+}
+
+/* 사이드바 */
+.sidebar {
+  width: 350px;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* 패널 공통 스타일 */
+.info-panel, .help-panel, .tools-panel, .favorites-panel, .measurement-panel, .multi-point-panel {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-panel h3, .help-panel h3, .tools-panel h3, .favorites-panel h3, .measurement-panel h3, .multi-point-panel h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* 정보 패널 */
+.info-list {
+  list-style: none;
+  margin: 1rem 0;
+}
+
+.info-list li {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.info-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.badge {
+  background: var(--bg-tertiary);
+  color: var(--text-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* 도구 패널 */
+.tool-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-btn:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.tool-btn.active {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+}
+
+.tool-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tool-btn.secondary {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.tool-btn.secondary:hover:not(:disabled) {
+  background: var(--danger-color);
+  border-color: var(--danger-color);
+  color: white;
+}
+
+/* 측정 설정 */
+.measure-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.setting-item input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--primary-color);
+}
+
+.setting-actions {
+  margin-top: 0.5rem;
+}
+
+/* 즐겨찾기 */
+.favorites-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.favorite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.favorite-item:last-child {
+  border-bottom: none;
+}
+
+.favorite-item:hover {
+  background: var(--bg-secondary);
+}
+
+.favorite-name {
+  flex: 1;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: color 0.2s ease;
+}
+
+.favorite-name:hover {
+  color: var(--primary-color);
+}
+
+.favorite-remove {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.favorite-remove:hover {
+  background: var(--danger-color);
+  color: white;
+}
+
+/* 측정 결과 */
+.measurement-result {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  font-family: monospace;
+  color: var(--text-color);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.measure-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.inline-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.inline-btn:hover:not(:disabled) {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+}
+
+.inline-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inline-btn.secondary:hover:not(:disabled) {
+  background: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+/* 측정 이력 */
+.measure-history-panel {
+  margin-top: 1rem;
+}
+
+.measure-history-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.history-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item.multi-point {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+}
+
+.history-text {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.history-points {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.history-point {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding-left: 1rem;
+}
+
+/* 범례 */
+.legend-panel {
+  margin-top: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.legend-color {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 2px;
+}
+
+.distance-color {
+  background: var(--danger-color);
+}
+
+.area-color {
+  background: var(--primary-color);
+}
+
+.marker-color {
+  background: var(--warning-color);
+}
+
+/* 다중 지점 측정 */
+.multi-point-info {
+  margin-bottom: 1rem;
+}
+
+.multi-point-info p {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+
+.multi-point-points {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.point-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+
+.point-number {
+  background: var(--primary-color);
+  color: white;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.point-name {
+  flex: 1;
+}
+
+.point-type {
+  font-size: 1rem;
+}
+
+.multi-point-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 도움말 */
+.help-section {
+  margin-bottom: 1.5rem;
+}
+
+.help-section h4 {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.help-section ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.help-section li {
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.help-section ul ul {
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+}
+
+.help-section ul ul li {
+  margin-bottom: 0.25rem;
+  color: var(--text-secondary);
+}
+
+.help-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.help-table td {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.help-table td:first-child {
+  font-weight: 600;
+  background: var(--bg-tertiary);
+  color: var(--text-color);
+}
+
+.help-table td:last-child {
+  color: var(--text-secondary);
+}
+
+.help-section details {
+  cursor: pointer;
+}
+
+.help-section summary {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.help-section summary:hover {
+  color: var(--primary-color);
+}
+
+/* 모달 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: modalSlideIn 0.3s ease;
+}
+
+.modal-content {
+  background: var(--bg-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+  animation: modalSlideIn 0.3s ease;
+}
+
+.modal-content h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-content p {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-btn {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-btn:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.modal-btn.secondary:hover {
+  background: var(--danger-color);
+  border-color: var(--danger-color);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .header {
+    padding: 0.75rem;
+  }
+  
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .search-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+  
+  .controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    max-height: 300px;
+    order: -1;
+  }
+  
+  .map-container {
+    height: 60vh;
+  }
+  
+  .coordinates {
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .modal-buttons {
+    gap: 0.5rem;
+  }
+  
+  .modal-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem;
+  }
+  
+  .header h1 {
+    font-size: 1.125rem;
+  }
+  
+  .search-input, .search-btn, .prediction-btn, .theme-toggle, .control-btn {
+    height: 44px;
+    font-size: 1rem;
+  }
+  
+  .search-input {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .search-btn, .prediction-btn, .theme-toggle, .control-btn {
+    padding: 0.5rem;
+    min-width: 44px;
+  }
+  
+  .tool-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .info-panel, .help-panel, .tools-panel, .favorites-panel, .measurement-panel, .multi-point-panel {
+    padding: 0.75rem;
+  }
+  
+  .sidebar {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+}
+
+/* 다크 테마 특별 스타일 */
+[data-theme="dark"] .search-results,
+[data-theme="dark"] .predictions-container {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .search-result-item:hover,
+[data-theme="dark"] .search-result-item.selected,
+[data-theme="dark"] .prediction-item:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .favorite-item:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .point-item {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .help-table td:first-child {
+  background: var(--bg-tertiary);
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 포커스 스타일 */
+button:focus,
+input:focus,
+select:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* 인쇄 스타일 */
+@media print {
+  .header,
+  .sidebar,
+  .controls,
+  .coordinates {
+    display: none;
+  }
+  
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .map-container {
+    height: 100vh;
+  }
+}
+
+/* 커서 예측 결과 */
+.cursor-predictions {
+  margin-top: 0.5rem;
+}
+
+.cursor-predictions .prediction-badge {
+  background: var(--primary-color);
+}
+
+/* 갤럭시 S21, 폴드 3, 아이폰 13 기준 모바일 최적화 */
+
+/* 갤럭시 S21 (1080 x 2400, 421ppi) */
+@media (max-width: 412px) and (max-height: 915px) {
+  .header {
+    padding: 0.75rem 1rem;
+    height: 70px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .header h1 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  
+  .search-container {
+    flex-direction: row;
+    max-width: 60%;
+    gap: 0.5rem;
+    transform: none;
+    margin: 0;
+  }
+  
+  .search-input {
+    height: 42px;
+    font-size: 16px;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .search-btn, .theme-toggle {
+    height: 42px;
+    min-width: 42px;
+    font-size: 1.1rem;
+  }
+  
+  .controls {
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+  
+  .control-btn {
+    height: 42px;
+    min-width: 42px;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .controls select {
+    height: 42px;
+    font-size: 0.875rem;
+    min-width: 110px;
+  }
+  
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    max-height: 35vh;
+    order: -1;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .map-container {
+    height: 65vh;
+  }
+  
+  .coordinates {
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    max-width: 180px;
+  }
+  
+  .info-panel, .help-panel, .tools-panel, .favorites-panel, .measurement-panel, .multi-point-panel {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .tool-btn {
+    padding: 0.875rem 0.75rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+  
+  .search-results, .predictions-container {
+    max-height: 220px;
+    font-size: 0.9rem;
+  }
+  
+  .search-result-item, .prediction-item {
+    padding: 0.875rem;
+    min-height: 48px;
+  }
+  
+  .favorite-button, .measure-button {
+    padding: 0.625rem;
+    font-size: 1.1rem;
+    min-width: 48px;
+    height: 48px;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+  
+  .modal-btn {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+  
+  .favorites-list, .measure-history-list {
+    max-height: 180px;
+  }
+  
+  .favorite-item {
+    padding: 0.875rem;
+    min-height: 48px;
+  }
+  
+  .history-item {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .measurement-result {
+    padding: 0.875rem;
+    font-size: 0.85rem;
+    min-height: 55px;
+  }
+  
+  .inline-btn {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+}
+
+/* 아이폰 13 (390 x 844, 460ppi) */
+@media (max-width: 390px) and (max-height: 844px) {
+  .header {
+    padding: 0.5rem 1rem;
+    height: 60px;
+  }
+  
+  .header h1 {
+    font-size: 1rem;
+  }
+  
+  .search-container {
+    max-width: 65%;
+    gap: 0.375rem;
+  }
+  
+  .search-input {
+    height: 40px;
+    font-size: 16px;
+    padding: 0.5rem 0.625rem;
+  }
+  
+  .search-btn, .theme-toggle {
+    height: 40px;
+    min-width: 40px;
+    font-size: 1rem;
+  }
+  
+  .controls {
+    gap: 0.375rem;
+  }
+  
+  .control-btn {
+    height: 40px;
+    min-width: 40px;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+  
+  .controls select {
+    height: 40px;
+    font-size: 0.8rem;
+    min-width: 100px;
+  }
+  
+  .sidebar {
+    max-height: 32vh;
+    padding: 0.625rem;
+    gap: 0.625rem;
+  }
+  
+  .map-container {
+    height: 68vh;
+  }
+  
+  .coordinates {
+    top: 0.625rem;
+    right: 0.625rem;
+    font-size: 0.75rem;
+    padding: 0.375rem 0.625rem;
+    max-width: 160px;
+  }
+  
+  .info-panel, .help-panel, .tools-panel, .favorites-panel, .measurement-panel, .multi-point-panel {
+    padding: 0.875rem;
+    margin-bottom: 0.625rem;
+  }
+  
+  .tool-btn {
+    padding: 0.75rem 0.625rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+  
+  .search-results, .predictions-container {
+    max-height: 200px;
+    font-size: 0.85rem;
+  }
+  
+  .search-result-item, .prediction-item {
+    padding: 0.75rem;
+    min-height: 44px;
+  }
+  
+  .favorite-button, .measure-button {
+    padding: 0.5rem;
+    font-size: 1rem;
+    min-width: 44px;
+    height: 44px;
+  }
+  
+  .modal-content {
+    margin: 0.75rem;
+    padding: 1.25rem;
+    max-width: 92%;
+  }
+  
+  .modal-btn {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+  
+  .favorites-list, .measure-history-list {
+    max-height: 160px;
+  }
+  
+  .favorite-item {
+    padding: 0.75rem;
+    min-height: 44px;
+  }
+  
+  .history-item {
+    padding: 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  .measurement-result {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    min-height: 50px;
+  }
+  
+  .inline-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+}
+
+/* 갤럭시 폴드 3 (1768 x 2208, 374ppi) - 펼친 상태 */
+@media (min-width: 1768px) and (max-height: 2208px) {
+  .header {
+    padding: 1rem 1.5rem;
+    height: 80px;
+  }
+  
+  .header h1 {
+    font-size: 1.4rem;
+  }
+  
+  .search-container {
+    max-width: 50%;
+    gap: 0.75rem;
+  }
+  
+  .search-input {
+    height: 48px;
+    font-size: 16px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .search-btn, .theme-toggle {
+    height: 48px;
+    min-width: 48px;
+    font-size: 1.2rem;
+  }
+  
+  .controls {
+    gap: 0.75rem;
+  }
+  
+  .control-btn {
+    height: 48px;
+    min-width: 48px;
+    font-size: 1.1rem;
+    padding: 0.75rem;
+  }
+  
+  .controls select {
+    height: 48px;
+    font-size: 1rem;
+    min-width: 140px;
+  }
+  
+  .main-content {
+    flex-direction: row;
+  }
+  
+  .sidebar {
+    width: 350px;
+    max-height: 100vh;
+    order: 0;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .map-container {
+    height: 100vh;
+    flex: 1;
+  }
+  
+  .coordinates {
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    max-width: 220px;
+  }
+  
+  .info-panel, .help-panel, .tools-panel, .favorites-panel, .measurement-panel, .multi-point-panel {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tool-btn {
+    padding: 1rem 0.875rem;
+    font-size: 1rem;
+    min-height: 52px;
+  }
+  
+  .search-results, .predictions-container {
+    max-height: 300px;
+    font-size: 1rem;
+  }
+  
+  .search-result-item, .prediction-item {
+    padding: 1rem;
+    min-height: 52px;
+  }
+  
+  .favorite-button, .measure-button {
+    padding: 0.75rem;
+    font-size: 1.2rem;
+    min-width: 52px;
+    height: 52px;
+  }
+  
+  .modal-content {
+    margin: 2rem;
+    padding: 2rem;
+    max-width: 80%;
+  }
+  
+  .modal-btn {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    min-height: 52px;
+  }
+  
+  .favorites-list, .measure-history-list {
+    max-height: 250px;
+  }
+  
+  .favorite-item {
+    padding: 1rem;
+    min-height: 52px;
+  }
+  
+  .history-item {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  .measurement-result {
+    padding: 1rem;
+    font-size: 0.9rem;
+    min-height: 60px;
+  }
+  
+  .inline-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+}
+
+/* 갤럭시 폴드 3 (832 x 2268, 374ppi) - 접힌 상태 */
+@media (max-width: 832px) and (min-height: 2268px) {
+  .header {
+    padding: 0.75rem 1rem;
+    height: 70px;
+  }
+  
+  .header h1 {
+    font-size: 1.1rem;
+  }
+  
+  .search-container {
+    max-width: 70%;
+    gap: 0.5rem;
+  }
+  
+  .search-input {
+    height: 44px;
+    font-size: 16px;
+    padding: 0.625rem 0.875rem;
+  }
+  
+  .search-btn, .theme-toggle {
+    height: 44px;
+    min-width: 44px;
+    font-size: 1.1rem;
+  }
+  
+  .controls {
+    gap: 0.5rem;
+  }
+  
+  .control-btn {
+    height: 44px;
+    min-width: 44px;
+    font-size: 1rem;
+    padding: 0.625rem;
+  }
+  
+  .controls select {
+    height: 44px;
+    font-size: 0.9rem;
+    min-width: 120px;
+  }
+  
+  .sidebar {
+    max-height: 30vh;
+    padding: 0.875rem;
+    gap: 0.875rem;
+  }
+  
+  .map-container {
+    height: 70vh;
+  }
+  
+  .coordinates {
+    top: 0.875rem;
+    right: 0.875rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.875rem;
+    max-width: 190px;
+  }
+  
+  .info-panel, .help-panel, .tools-panel, .favorites-panel, .measurement-panel, .multi-point-panel {
+    padding: 1rem;
+    margin-bottom: 0.875rem;
+  }
+  
+  .tool-btn {
+    padding: 0.875rem 0.75rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+  
+  .search-results, .predictions-container {
+    max-height: 240px;
+    font-size: 0.9rem;
+  }
+  
+  .search-result-item, .prediction-item {
+    padding: 0.875rem;
+    min-height: 48px;
+  }
+  
+  .favorite-button, .measure-button {
+    padding: 0.625rem;
+    font-size: 1.1rem;
+    min-width: 48px;
+    height: 48px;
+  }
+  
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: 88%;
+  }
+  
+  .modal-btn {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+  
+  .favorites-list, .measure-history-list {
+    max-height: 200px;
+  }
+  
+  .favorite-item {
+    padding: 0.875rem;
+    min-height: 48px;
+  }
+  
+  .history-item {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .measurement-result {
+    padding: 0.875rem;
+    font-size: 0.85rem;
+    min-height: 55px;
+  }
+  
+  .inline-btn {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+}
+
+/* 고해상도 디스플레이 최적화 (460ppi 이상) */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 460dpi) {
+  .search-btn, .prediction-btn, .theme-toggle, .control-btn,
+  .tool-btn, .favorite-button, .measure-button, .inline-btn, .modal-btn {
+    border-width: 0.33px;
+  }
+  
+  .search-results, .predictions-container {
+    border-width: 0.33px;
+  }
+  
+  .search-input, .controls select {
+    border-width: 0.33px;
+  }
+}
+
+/* 안전 영역 지원 (아이폰 13, 폴드 3) */
+@supports (padding: max(0px)) {
+  .header {
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+  
+  .sidebar {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+  
+  .modal-content {
+    padding-left: max(1.25rem, env(safe-area-inset-left));
+    padding-right: max(1.25rem, env(safe-area-inset-right));
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* 터치 디바이스 최적화 (갤럭시, 아이폰) */
+@media (hover: none) and (pointer: coarse) {
+  .search-btn:hover, .prediction-btn:hover, .theme-toggle:hover,
+  .control-btn:hover, .tool-btn:hover, .favorite-button:hover,
+  .measure-button:hover, .inline-btn:hover, .modal-btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .search-btn:active, .prediction-btn:active, .theme-toggle:active,
+  .control-btn:active, .tool-btn:active, .favorite-button:active,
+  .measure-button:active, .inline-btn:active, .modal-btn:active {
+    transform: scale(0.92);
+    transition: transform 0.08s ease;
+  }
+  
+  .search-result-item:hover, .prediction-item:hover,
+  .favorite-item:hover {
+    background: var(--bg-secondary);
+  }
+  
+  .search-result-item:active, .prediction-item:active,
+  .favorite-item:active {
+    background: var(--bg-tertiary);
+    transform: scale(0.96);
+  }
+}
+
+/* 모바일 햄버거 메뉴 */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 0.5rem;
+}
+
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background: var(--text-color);
+  margin: 2px 0;
+  transition: all 0.3s ease;
+  border-radius: 1px;
+}
+
+.hamburger-line.open:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100vh;
+  background: var(--bg-color);
+  border-left: 1px solid var(--border-color);
+  z-index: 1000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.mobile-menu-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.close-mobile-menu {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.close-mobile-menu:hover {
+  background: var(--bg-tertiary);
+}
+
+.mobile-menu-content {
+  padding: 1rem;
+}
+
+.mobile-menu-section {
+  margin-bottom: 1.5rem;
+}
+
+.mobile-menu-section h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-menu-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.mobile-menu-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.mobile-menu-btn:active {
+  transform: translateY(0);
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+/* 헤더 레이아웃 최적화 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-color);
+  border-bottom: 1px solid var(--border-color);
+  height: 70px;
+  gap: 1rem;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* 검색 결과 및 예측 결과 최적화 */
+.search-results, .predictions-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 모바일 환경에서 사이드바 패널 숨김 */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none !important;
+  }
+  
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .map-container {
+    height: 100vh;
+    width: 100%;
+  }
+  
+  /* 모바일에서만 지도 컨트롤 버튼들 표시 */
+  .mobile-map-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 100;
+  }
+  
+  .mobile-map-control-btn {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  
+  .mobile-map-control-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .mobile-map-control-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* 모바일 헤더 최적화 */
+  .header {
+    padding: 0.75rem;
+    height: auto;
+    min-height: 70px;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-secondary) 100%);
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-left {
+    flex-shrink: 0;
+  }
+  
+  .header-left h1 {
+    font-size: 1.1rem;
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-center {
+    flex: 1;
+    width: 100%;
+    max-width: none;
+  }
+  
+  .header-right {
+    display: none;
+  }
+  
+  /* 모바일 검색 컨테이너 최적화 */
+  .search-container {
+    width: 100%;
+    max-width: none;
+    transform: none;
+    margin: 0;
+    flex-direction: row;
+    gap: 0.75rem;
+    align-items: center;
+    background: var(--bg-color);
+    padding: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-input {
+    flex: 1;
+    height: 48px;
+    font-size: 16px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-color);
+    transition: all 0.2s ease;
+  }
+  
+  .search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+  }
+  
+  .search-btn, .theme-toggle {
+    height: 48px;
+    min-width: 48px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    transition: all 0.2s ease;
+  }
+  
+  .search-btn:hover, .theme-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .search-btn:active, .theme-toggle:active {
+    transform: translateY(0);
+  }
+  
+  /* 모바일 검색 결과 최적화 */
+  .search-results, .predictions-container {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    max-height: 50vh;
+    border-radius: 0 0 12px 12px;
+    z-index: 200;
+    margin: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .search-result-item, .prediction-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+  }
+  
+  .search-result-item:hover, .prediction-item:hover {
+    background: var(--bg-secondary);
+  }
+  
+  .search-result-item:active, .prediction-item:active {
+    background: var(--bg-tertiary);
+    transform: scale(0.98);
+  }
+  
+  /* 모바일 좌표 표시 최적화 */
+  .coordinates {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1rem;
+    right: auto;
+    top: auto;
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+    max-width: 220px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 12px;
+    z-index: 50;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+  }
+  
+  /* 모바일 햄버거 메뉴 개선 */
+  .hamburger-menu {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  
+  .hamburger-line {
+    width: 22px;
+    height: 2px;
+    background: var(--text-color);
+    margin: 3px 0;
+    transition: all 0.3s ease;
+    border-radius: 1px;
+  }
+  
+  /* 모바일 메뉴 개선 */
+  .mobile-menu {
+    width: 320px;
+    right: -320px;
+    background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-secondary) 100%);
+    border-left: 2px solid var(--border-color);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .mobile-menu-btn {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    min-height: 52px;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+  }
+  
+  .mobile-menu-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+  }
+  
+  .mobile-menu-btn:active {
+    transform: translateX(2px);
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem;
+    min-height: 60px;
+  }
+  
+  .header-left h1 {
+    font-size: 1rem;
+  }
+  
+  .search-container {
+    gap: 0.5rem;
+    padding: 0.375rem;
+  }
+  
+  .search-input {
+    height: 44px;
+    font-size: 16px;
+    padding: 0.625rem 0.875rem;
+  }
+  
+  .search-btn, .theme-toggle {
+    height: 44px;
+    min-width: 44px;
+    font-size: 1.1rem;
+  }
+  
+  .mobile-map-controls {
+    top: 0.75rem;
+    right: 0.75rem;
+    gap: 0.375rem;
+  }
+  
+  .mobile-map-control-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+  
+  .search-results, .predictions-container {
+    top: 60px;
+    max-height: 45vh;
+  }
+  
+  .coordinates {
+    bottom: 1rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    max-width: 200px;
+  }
+  
+  .mobile-menu {
+    width: 280px;
+    right: -280px;
+  }
+  
+  .mobile-menu-btn {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+}
+
+/* 세로 모드 모바일 최적화 */
+@media (max-width: 768px) and (orientation: portrait) {
+  .header {
+    height: auto;
+    min-height: 85px;
+  }
+  
+  .search-results, .predictions-container {
+    top: 85px;
+    max-height: 40vh;
+  }
+  
+  .coordinates {
+    bottom: 1.25rem;
+  }
+}
+
+/* 가로 모드 모바일 최적화 */
+@media (max-width: 768px) and (orientation: landscape) {
+  .header {
+    height: 55px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 55px;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .header-left h1 {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  .header-center {
+    max-width: 65%;
+  }
+  
+  .search-container {
+    max-width: 100%;
+    padding: 0.375rem;
+  }
+  
+  .search-results, .predictions-container {
+    top: 55px;
+    max-height: 35vh;
+  }
+  
+  .coordinates {
+    bottom: 1rem;
+  }
+  
+  .mobile-map-controls {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-map-control-btn:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mobile-map-control-btn:active {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(0.95);
+  }
+  
+  .search-btn:hover, .theme-toggle:hover {
+    transform: none;
+  }
+  
+  .search-btn:active, .theme-toggle:active {
+    transform: scale(0.95);
+  }
+  
+  .mobile-menu-btn:hover {
+    transform: none;
+  }
+  
+  .mobile-menu-btn:active {
+    transform: scale(0.98);
+  }
+}
+
+/* 모바일 메뉴 콘텐츠 스타일 */
+.mobile-info-text {
+  background: var(--bg-secondary);
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+}
+
+.mobile-features {
+  margin-bottom: 0.75rem;
+}
+
+.feature-item {
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.mobile-tech-info {
+  background: var(--bg-tertiary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tech-item {
+  margin-bottom: 0.25rem;
+}
+
+.tech-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 사용 방법 섹션 */
+.usage-subsection {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.usage-subsection:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.usage-subsection h5 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.usage-list {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+}
+
+.usage-list li {
+  margin-bottom: 0.375rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-color);
+}
+
+.result-buttons-info {
+  background: var(--bg-secondary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-color);
+}
+
+.result-buttons-info ul {
+  margin: 0.25rem 0 0 0;
+  padding-left: 1rem;
+}
+
+.result-buttons-info li {
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+}
+
+/* 단축키 테이블 */
+.shortcuts-table {
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.shortcut-row {
+  display: flex;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.shortcut-row:last-child {
+  border-bottom: none;
+}
+
+.shortcut-key {
+  flex: 0 0 80px;
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.shortcut-desc {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-color);
+}
+
+/* 빈 상태 표시 */
+.mobile-empty-state {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* 범례 */
+.legend-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+  color: var(--text-color);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  margin-right: 0.75rem;
+  border: 1px solid var(--border-color);
+}
+
+.distance-color {
+  background: #ff6b6b;
+}
+
+.area-color {
+  background: #4ecdc4;
+}
+
+.marker-color {
+  background: #45b7d1;
+}
+
+/* 문제 해결 팁 */
+.troubleshooting-tips {
+  background: var(--bg-secondary);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--primary-color);
+}
+
+.tip-item {
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-color);
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 모바일 메뉴 스크롤 최적화 */
+.mobile-menu-content {
+  padding: 1rem;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 모바일 메뉴 섹션 간격 조정 */
+.mobile-menu-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-menu-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* 다크 테마 지원 */
+[data-theme="dark"] .mobile-info-text {
+  background: var(--bg-secondary);
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .mobile-tech-info {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .result-buttons-info {
+  background: var(--bg-secondary);
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .shortcuts-table {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .mobile-empty-state {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .troubleshooting-tips {
+  background: var(--bg-secondary);
+  border-left-color: var(--primary-color);
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
+  .mobile-menu-content {
+    padding: 0.75rem;
+  }
+  
+  .usage-subsection h5 {
+    font-size: 0.85rem;
+  }
+  
+  .usage-list li {
+    font-size: 0.75rem;
+  }
+  
+  .shortcut-key {
+    flex: 0 0 70px;
+    font-size: 0.75rem;
+  }
+  
+  .shortcut-desc {
+    font-size: 0.75rem;
+  }
+  
+  .mobile-info-text {
+    font-size: 0.8rem;
+    padding: 0.625rem;
+  }
+  
+  .feature-item {
+    font-size: 0.75rem;
+  }
+  
+  .tech-item {
+    font-size: 0.7rem;
+  }
+  
+  .tip-item {
+    font-size: 0.75rem;
+  }
+}
+
+/* 데스크톱에서는 모바일 컨트롤 숨김 */
+@media (min-width: 769px) {
+  .mobile-map-controls {
+    display: none;
+  }
+}
+

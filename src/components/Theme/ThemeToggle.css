@@ -1,0 +1,304 @@
+/* PC 환경 최적화 테마 토글 */
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  z-index: -1;
+}
+
+.theme-toggle:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* 아이콘 애니메이션 */
+.theme-toggle .theme-icon {
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
+/* 다크모드 지원 */
+[data-theme="dark"] .theme-toggle {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 포커스 스타일 */
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+/* 애니메이션 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.theme-toggle:active .theme-icon {
+  animation: rotate 0.3s ease-in-out;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  
+  .theme-toggle:hover {
+    transform: translateY(-1px) scale(1.02);
+  }
+}
+
+/* 터치 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .theme-toggle:hover {
+    transform: none;
+  }
+  
+  .theme-toggle:active {
+    transform: scale(0.9);
+  }
+  
+  .theme-toggle:hover .theme-icon {
+    transform: none;
+  }
+  
+  .theme-toggle:active .theme-icon {
+    animation: rotate 0.3s ease-in-out;
+  }
+}
+
+/* 접근성 개선 */
+.theme-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+/* 툴팁 스타일 */
+.theme-toggle[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 0.5rem;
+}
+
+.theme-toggle[title]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 0.25rem;
+}
+
+[data-theme="dark"] .theme-toggle[title]:hover::after {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f2937;
+}
+
+[data-theme="dark"] .theme-toggle[title]:hover::before {
+  border-top-color: rgba(255, 255, 255, 0.9);
+}
+
+/* 로딩 상태 */
+.theme-toggle.loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.theme-toggle.loading .theme-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 호버 효과 개선 */
+.theme-toggle:hover {
+  filter: brightness(1.1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  filter: brightness(1.2);
+}
+
+/* 클릭 효과 */
+.theme-toggle:active {
+  filter: brightness(0.9);
+}
+
+/* 부드러운 전환 */
+.theme-toggle,
+.theme-toggle::before,
+.theme-toggle .theme-icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 반응형 테마 토글 */
+/* 모바일 (320px ~ 767px) */
+@media (max-width: 767px) {
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    border-width: 1px;
+  }
+
+  .theme-icon {
+    font-size: 1.1rem;
+  }
+}
+
+/* 태블릿 (768px ~ 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+  }
+
+  .theme-icon {
+    font-size: 1.2rem;
+  }
+}
+
+/* 데스크톱 (1024px 이상) */
+@media (min-width: 1024px) {
+  .theme-toggle {
+    width: 48px;
+    height: 48px;
+    font-size: 1.3rem;
+  }
+
+  .theme-icon {
+    font-size: 1.3rem;
+  }
+}
+
+/* 대형 화면 (1440px 이상) */
+@media (min-width: 1440px) {
+  .theme-toggle {
+    width: 52px;
+    height: 52px;
+    font-size: 1.4rem;
+  }
+
+  .theme-icon {
+    font-size: 1.4rem;
+  }
+}
+
+/* 터치 디바이스 최적화 */
+@media (hover: none) and (pointer: coarse) {
+  .theme-toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .theme-toggle:hover .theme-icon {
+    transform: none;
+  }
+
+  .theme-toggle:active .theme-icon {
+    transform: rotate(15deg) scale(1.1);
+  }
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-icon {
+    transition: none;
+  }
+}
+
+/* 다크 모드 반응형 */
+@media (prefers-color-scheme: dark) {
+  [data-theme="light"] .theme-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme="dark"] .theme-toggle {
+    background: rgba(17, 24, 39, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+  }
+}
