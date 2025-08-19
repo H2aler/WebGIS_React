@@ -1,4 +1,5 @@
 // OpenLayers CDN을 통해 로드됨 - 전역 ol 객체 사용
+// Fixed: ES modules imports removed for GitHub Pages compatibility
 
 // 지도 초기화
 class WebGISMap {
