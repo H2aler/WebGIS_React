@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/WebGIS_React/static/css/main.e0a6baea.css",
+    "main.js": "/WebGIS_React/static/js/main.01d965ca.js",
+    "static/js/453.0ba439a0.chunk.js": "/WebGIS_React/static/js/453.0ba439a0.chunk.js",
+    "index.html": "/WebGIS_React/index.html",
+    "main.e0a6baea.css.map": "/WebGIS_React/static/css/main.e0a6baea.css.map",
+    "main.01d965ca.js.map": "/WebGIS_React/static/js/main.01d965ca.js.map",
+    "453.0ba439a0.chunk.js.map": "/WebGIS_React/static/js/453.0ba439a0.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e0a6baea.css",
+    "static/js/main.01d965ca.js"
+  ]
+}
